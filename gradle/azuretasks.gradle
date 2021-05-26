@@ -1,0 +1,60 @@
+import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
+
+apply from: 'azure-functions.gradle'
+
+OperatingSystem OS = DefaultNativePlatform.currentOperatingSystem;
+
+/**
+ * Set current working subscription
+ */
+task azureAccountSet(type: Exec) {
+    group = 'azurefunctions'
+    if (OS.isWindows()) {
+        commandLine 'cmd', '/c', 'az', 'account', 'set', '--subscription', azurefunctions {}.getSubscription()
+    } else {
+        commandLine 'az', 'account', 'set', '--subscription', azurefunctions {}.getSubscription()
+    }
+}
+
+/**
+ * Fetch settings and configure local.settings.json
+ */
+task fetchAppSettings(type: Exec) {
+    dependsOn azureAccountSet
+    group = 'azurefunctions'
+    if (OS.isWindows()) {
+        commandLine 'cmd', '/c', 'func', 'azure', 'functionapp', 'fetch-app-settings', azurefunctions {}.getAppName(), '--subscription', azurefunctions {}.getSubscription()
+    } else {
+        commandLine 'func', 'azure', 'functionapp', 'fetch-app-settings', azurefunctions {}.getAppName(), '--subscription', azurefunctions {}.getSubscription()
+    }
+}
+
+tasks.azureFunctionsDeploy.dependsOn(azureAccountSet)
+
+/**
+ * Enable extensions bundle (create host.json)
+ */
+task installFunctionsExtensions(type: Exec) {
+    group = 'azurefunctions'
+    if (OS.isWindows()) {
+        commandLine 'cmd', '/c', 'func', 'extensions', 'install', '--package', 'Microsoft.Azure.Functions.ExtensionBundle'
+    } else {
+        commandLine 'func', 'extensions', 'install', '--package', 'Microsoft.Azure.Functions.ExtensionBundle'
+    }
+}
+
+/**
+ * Prepare environment and check settings
+ */
+azureFunctionsRun {
+    doFirst {
+        if (!new File(projectDir, "azure-functions.gradle")) {
+            throw new FileNotFoundException("azure-functions.gradle not found")
+        }
+    }
+    //set environment to run the function locally with correct java version
+    environment "JAVA_HOME", System.getProperty("java.home")
+    doFirst {
+        println "Running azureFunctionsRun with " + System.getProperty("java.home")
+    }
+}

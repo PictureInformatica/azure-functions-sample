@@ -1,0 +1,45 @@
+
+def generateBasicLocalSettings = { ->
+    if(!new File(projectDir, "local.settings.json").exists()) {
+        new File(projectDir, "local.settings.json").text = """
+{
+  "IsEncrypted": false,
+  "Values": {
+    "FUNCTIONS_WORKER_RUNTIME": "java",
+    "AzureWebJobsStorage": "",
+    "AzureWebJobsDashboard": "",
+    "MyBindingConnection": "",
+    "AzureWebJobs.HttpExample.Disabled": "true"
+  },
+  "ConnectionStrings": {
+    "SQLConnectionString": ""
+  },
+  "Host": {
+    "LocalHttpPort": 7071,
+    "CORS": "*"
+  }
+}
+"""
+    }
+} as Object
+
+def generateBasicAzureFunctionsSettings = { ->
+    if(!new File(projectDir, 'azure-functions.gradle').exists()) {
+        new File(projectDir, "azure-functions.gradle").text = """
+azurefunctions {
+    resourceGroup = 'java-functions-group'
+    appName = 'azure-functions-sample-demo'
+    pricingTier = 'Consumption'
+    region = 'westus'
+    runtime {
+      os = 'windows'
+      javaVersion = '11'
+    }
+    localDebug = "transport=dt_socket,server=y,suspend=n,address=5005"
+}
+"""
+    }
+} as Object
+
+generateBasicAzureFunctionsSettings()
+generateBasicLocalSettings()
