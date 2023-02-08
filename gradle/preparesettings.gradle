@@ -30,10 +30,16 @@ azurefunctions {
     resourceGroup = 'java-functions-group'
     appName = 'azure-functions-sample-demo'
     pricingTier = 'Consumption'
+    subscription = '00000000-0000-0000-0000-000000000000'
     region = 'westus'
     runtime {
-      os = 'windows'
-      javaVersion = '11'
+      os = 'linux'
+      javaVersion = '17'
+    }
+    appSettings {
+        FUNCTIONS_EXTENSION_VERSION = '~4'
+        customSetting1 = "value"
+        customSetting2 = "value2"
     }
     localDebug = "transport=dt_socket,server=y,suspend=n,address=5005"
 }

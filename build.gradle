@@ -1,7 +1,8 @@
 plugins {
     id 'java'
-    id "com.microsoft.azure.azurefunctions" version "1.5.1"
+    id "com.microsoft.azure.azurefunctions" version "1.12.0"
 }
+
 apply from: 'gradle/preparesettings.gradle'
 apply from: 'gradle/azuretasks.gradle'
 
@@ -13,8 +14,8 @@ repositories {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 compileJava {
@@ -26,14 +27,6 @@ compileTestJava {
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
-
-    implementation 'com.microsoft.azure.functions:azure-functions-java-library:1.4.2'
+    implementation 'com.microsoft.azure.functions:azure-functions-java-library:3.0.0'
     implementation 'org.apache.commons:commons-lang3:3.12.0'
 }
-
-test {
-    useJUnitPlatform()
-}
-

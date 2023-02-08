@@ -37,7 +37,7 @@ public class HelloWorld {
                     .build();
         }
 
-        return req.createResponseBuilder(HttpStatus.BAD_REQUEST).build();
+        return req.createResponseBuilder(HttpStatus.BAD_REQUEST).body("ERROR: 'name' query parameter not specified").build();
     }
 
     /**
